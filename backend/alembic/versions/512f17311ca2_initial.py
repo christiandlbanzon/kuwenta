@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 46d6b352c53c
+Revision ID: 512f17311ca2
 Revises: 
-Create Date: 2026-05-05 13:20:20.405927
+Create Date: 2026-05-07 02:43:26.477307
 
 """
 from typing import Sequence, Union
@@ -13,7 +13,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision: str = '46d6b352c53c'
+revision: str = '512f17311ca2'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -28,12 +28,10 @@ def upgrade() -> None:
     sa.Column('display_name', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('currency', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('timezone', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('user', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_user_email'), ['email'], unique=True)
-
+    op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
     op.create_table('account',
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('user_id', sa.Uuid(), nullable=False),
@@ -41,13 +39,11 @@ def upgrade() -> None:
     sa.Column('type', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('institution', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('current_balance', sa.Numeric(precision=14, scale=2), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('account', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_account_user_id'), ['user_id'], unique=False)
-
+    op.create_index(op.f('ix_account_user_id'), 'account', ['user_id'], unique=False)
     op.create_table('category',
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('user_id', sa.Uuid(), nullable=False),
@@ -61,9 +57,7 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('category', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_category_user_id'), ['user_id'], unique=False)
-
+    op.create_index(op.f('ix_category_user_id'), 'category', ['user_id'], unique=False)
     op.create_table('insight',
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('user_id', sa.Uuid(), nullable=False),
@@ -73,13 +67,11 @@ def upgrade() -> None:
     sa.Column('insight_metadata', sa.JSON(), nullable=True),
     sa.Column('period_start', sa.Date(), nullable=False),
     sa.Column('period_end', sa.Date(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('insight', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_insight_user_id'), ['user_id'], unique=False)
-
+    op.create_index(op.f('ix_insight_user_id'), 'insight', ['user_id'], unique=False)
     op.create_table('llmcall',
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('user_id', sa.Uuid(), nullable=True),
@@ -91,14 +83,12 @@ def upgrade() -> None:
     sa.Column('latency_ms', sa.Integer(), nullable=False),
     sa.Column('success', sa.Boolean(), nullable=False),
     sa.Column('error', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('llmcall', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_llmcall_created_at'), ['created_at'], unique=False)
-        batch_op.create_index(batch_op.f('ix_llmcall_user_id'), ['user_id'], unique=False)
-
+    op.create_index(op.f('ix_llmcall_created_at'), 'llmcall', ['created_at'], unique=False)
+    op.create_index(op.f('ix_llmcall_user_id'), 'llmcall', ['user_id'], unique=False)
     op.create_table('budget',
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('user_id', sa.Uuid(), nullable=False),
@@ -111,9 +101,7 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('budget', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_budget_user_id'), ['user_id'], unique=False)
-
+    op.create_index(op.f('ix_budget_user_id'), 'budget', ['user_id'], unique=False)
     op.create_table('transaction',
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('user_id', sa.Uuid(), nullable=False),
@@ -124,8 +112,8 @@ def upgrade() -> None:
     sa.Column('description', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('merchant', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('notes', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
-    sa.Column('occurred_at', sa.DateTime(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('occurred_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('source', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('raw_input', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('ai_confidence', sa.Float(), nullable=True),
@@ -134,61 +122,41 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('transaction', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_transaction_occurred_at'), ['occurred_at'], unique=False)
-        batch_op.create_index(batch_op.f('ix_transaction_user_id'), ['user_id'], unique=False)
-
+    op.create_index(op.f('ix_transaction_occurred_at'), 'transaction', ['occurred_at'], unique=False)
+    op.create_index(op.f('ix_transaction_user_id'), 'transaction', ['user_id'], unique=False)
     op.create_table('receipt',
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('user_id', sa.Uuid(), nullable=False),
     sa.Column('transaction_id', sa.Uuid(), nullable=True),
     sa.Column('image_path', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('extracted_data', sa.JSON(), nullable=True),
-    sa.Column('uploaded_at', sa.DateTime(), nullable=False),
+    sa.Column('uploaded_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['transaction_id'], ['transaction.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('receipt', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_receipt_user_id'), ['user_id'], unique=False)
-
+    op.create_index(op.f('ix_receipt_user_id'), 'receipt', ['user_id'], unique=False)
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
-    with op.batch_alter_table('receipt', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_receipt_user_id'))
-
+    op.drop_index(op.f('ix_receipt_user_id'), table_name='receipt')
     op.drop_table('receipt')
-    with op.batch_alter_table('transaction', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_transaction_user_id'))
-        batch_op.drop_index(batch_op.f('ix_transaction_occurred_at'))
-
+    op.drop_index(op.f('ix_transaction_user_id'), table_name='transaction')
+    op.drop_index(op.f('ix_transaction_occurred_at'), table_name='transaction')
     op.drop_table('transaction')
-    with op.batch_alter_table('budget', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_budget_user_id'))
-
+    op.drop_index(op.f('ix_budget_user_id'), table_name='budget')
     op.drop_table('budget')
-    with op.batch_alter_table('llmcall', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_llmcall_user_id'))
-        batch_op.drop_index(batch_op.f('ix_llmcall_created_at'))
-
+    op.drop_index(op.f('ix_llmcall_user_id'), table_name='llmcall')
+    op.drop_index(op.f('ix_llmcall_created_at'), table_name='llmcall')
     op.drop_table('llmcall')
-    with op.batch_alter_table('insight', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_insight_user_id'))
-
+    op.drop_index(op.f('ix_insight_user_id'), table_name='insight')
     op.drop_table('insight')
-    with op.batch_alter_table('category', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_category_user_id'))
-
+    op.drop_index(op.f('ix_category_user_id'), table_name='category')
     op.drop_table('category')
-    with op.batch_alter_table('account', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_account_user_id'))
-
+    op.drop_index(op.f('ix_account_user_id'), table_name='account')
     op.drop_table('account')
-    with op.batch_alter_table('user', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_user_email'))
-
+    op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
     # ### end Alembic commands ###

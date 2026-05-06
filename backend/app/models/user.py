@@ -3,7 +3,7 @@ from uuid import UUID, uuid4
 
 from sqlmodel import Field, SQLModel
 
-from app.models._common import utcnow
+from app.models._common import tz_now_column, utcnow
 
 
 class User(SQLModel, table=True):
@@ -13,4 +13,4 @@ class User(SQLModel, table=True):
     display_name: str
     currency: str = "PHP"
     timezone: str = "Asia/Manila"
-    created_at: datetime = Field(default_factory=utcnow)
+    created_at: datetime = Field(default_factory=utcnow, sa_column=tz_now_column())

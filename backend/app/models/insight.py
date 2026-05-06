@@ -5,7 +5,7 @@ from uuid import UUID, uuid4
 from sqlalchemy import JSON, Column
 from sqlmodel import Field, SQLModel
 
-from app.models._common import utcnow
+from app.models._common import tz_now_column, utcnow
 
 InsightType = Literal["monthly_summary", "anomaly", "recurring_detected"]
 
@@ -19,4 +19,4 @@ class Insight(SQLModel, table=True):
     insight_metadata: dict[str, Any] = Field(default_factory=dict, sa_column=Column(JSON))
     period_start: date
     period_end: date
-    created_at: datetime = Field(default_factory=utcnow)
+    created_at: datetime = Field(default_factory=utcnow, sa_column=tz_now_column())

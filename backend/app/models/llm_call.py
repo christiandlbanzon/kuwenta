@@ -3,7 +3,7 @@ from uuid import UUID, uuid4
 
 from sqlmodel import Field, SQLModel
 
-from app.models._common import utcnow
+from app.models._common import tz_now_column, utcnow
 
 
 class LLMCall(SQLModel, table=True):
@@ -17,4 +17,4 @@ class LLMCall(SQLModel, table=True):
     latency_ms: int
     success: bool
     error: str | None = None
-    created_at: datetime = Field(default_factory=utcnow, index=True)
+    created_at: datetime = Field(default_factory=utcnow, sa_column=tz_now_column(indexed=True))
