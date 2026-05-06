@@ -35,6 +35,10 @@ class Settings(BaseSettings):
 
     receipt_storage_dir: str = "./data/receipts"
 
+    # Comma-separated list of allowed CORS origins. Local dev defaults to Next.js on :3000.
+    # Production: set this to your frontend URL (e.g. "https://kuwenta.vercel.app").
+    cors_origins: str = "http://localhost:3000"
+
 
 @lru_cache
 def get_settings() -> Settings:

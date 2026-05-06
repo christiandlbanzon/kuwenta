@@ -1,0 +1,43 @@
+# Render blueprint — deploys the backend as a free web service.
+# After connecting this repo on Render, set the secret env vars in the dashboard:
+#   KUWENTA_DATABASE_URL  (from your Neon project, append ?sslmode=require)
+#   KUWENTA_GEMINI_API_KEY
+#   KUWENTA_JWT_SECRET    (any long random string — Render can generate)
+#   KUWENTA_CORS_ORIGINS  (your Vercel URL, comma-separated if multiple)
+#
+# Receipts on the free tier are ephemeral — wiped on each cold start.
+# v2 should swap RECEIPT_STORAGE_DIR for an S3-compatible service (Cloudflare R2 free tier).
+
+services:
+  - type: web
+    name: kuwenta-api
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    healthCheckPath: /healthz
+    envVars:
+      - key: KUWENTA_APP_ENV
+        value: production
+      - key: KUWENTA_RECEIPT_STORAGE_DIR
+        value: /tmp/receipts
+      - key: KUWENTA_LLM_PROVIDER_CATEGORIZATION
+        value: gemini
+      - key: KUWENTA_LLM_PROVIDER_QA
+        value: gemini
+      - key: KUWENTA_LLM_PROVIDER_OCR
+        value: gemini
+      - key: KUWENTA_LLM_PROVIDER_INSIGHTS
+        value: gemini
+      - key: KUWENTA_GEMINI_RATE_LIMIT_PER_MIN
+        value: "8"
+      # Set in dashboard (sync: false marks them as manual entry):
+      - key: KUWENTA_DATABASE_URL
+        sync: false
+      - key: KUWENTA_GEMINI_API_KEY
+        sync: false
+      - key: KUWENTA_JWT_SECRET
+        sync: false
+      - key: KUWENTA_CORS_ORIGINS
+        sync: false
