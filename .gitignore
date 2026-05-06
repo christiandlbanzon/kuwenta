@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Data
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Eval results — track structure but not raw outputs
+backend/evals/results/*.json
+backend/evals/results/*.html
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.vercel/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# uv
+uv.lock

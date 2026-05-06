@@ -1,0 +1,50 @@
+# Fly.io config for the Kuwenta backend.
+# Deploy with:
+#   fly launch --no-deploy --copy-config           # first time
+#   fly volumes create kuwenta_data --size 1       # 1 GB SQLite + receipts
+#   fly secrets set KUWENTA_GEMINI_API_KEY=...
+#   fly secrets set KUWENTA_JWT_SECRET=$(openssl rand -base64 48)
+#   fly deploy
+
+app = "kuwenta-api"
+primary_region = "sin"  # Singapore — closest free-tier region to PH
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  KUWENTA_APP_ENV = "production"
+  KUWENTA_DATABASE_URL = "sqlite+aiosqlite:////data/kuwenta.db"
+  KUWENTA_RECEIPT_STORAGE_DIR = "/data/receipts"
+  KUWENTA_LLM_PROVIDER_CATEGORIZATION = "gemini"
+  KUWENTA_LLM_PROVIDER_QA = "gemini"
+  KUWENTA_LLM_PROVIDER_OCR = "gemini"
+  KUWENTA_LLM_PROVIDER_INSIGHTS = "gemini"
+  KUWENTA_GEMINI_RATE_LIMIT_PER_MIN = "15"
+
+[[mounts]]
+  source = "kuwenta_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"  # free tier — sleep when idle
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 100
+    hard_limit = 200
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/healthz"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

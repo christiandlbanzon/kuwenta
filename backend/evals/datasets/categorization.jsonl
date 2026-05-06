@@ -1,0 +1,55 @@
+{"text": "180 jollibee lunch", "merchant": "Jollibee", "amount": "180", "category": "Food & Dining"}
+{"text": "350 grabfood dinner", "merchant": "GrabFood", "amount": "350", "category": "Food & Dining"}
+{"text": "120 mcdo breakfast", "merchant": "McDonald's", "amount": "120", "category": "Food & Dining"}
+{"text": "210 chowking takeout", "merchant": "Chowking", "amount": "210", "category": "Food & Dining"}
+{"text": "175 starbucks frap", "merchant": "Starbucks", "amount": "175", "category": "Food & Dining"}
+{"text": "650 mang inasal pamily pack", "merchant": "Mang Inasal", "amount": "650", "category": "Food & Dining"}
+{"text": "220 greenwich lunch", "merchant": "Greenwich", "amount": "220", "category": "Food & Dining"}
+{"text": "1200 buffet vikings", "merchant": "Vikings", "amount": "1200", "category": "Food & Dining"}
+{"text": "85 zagu", "merchant": "Zagu", "amount": "85", "category": "Food & Dining"}
+{"text": "450 foodpanda dinner", "merchant": "FoodPanda", "amount": "450", "category": "Food & Dining"}
+{"text": "2300 sm hypermarket grocery", "merchant": "SM Hypermarket", "amount": "2300", "category": "Groceries"}
+{"text": "450 palengke gulay tinapa", "merchant": null, "amount": "450", "category": "Groceries"}
+{"text": "1800 puregold weekly", "merchant": "Puregold", "amount": "1800", "category": "Groceries"}
+{"text": "2100 robinsons supermarket", "merchant": "Robinsons", "amount": "2100", "category": "Groceries"}
+{"text": "320 sari-sari store snacks", "merchant": null, "amount": "320", "category": "Groceries"}
+{"text": "1500 talipapa fish meat", "merchant": null, "amount": "1500", "category": "Groceries"}
+{"text": "880 7-eleven groceries", "merchant": "7-Eleven", "amount": "880", "category": "Groceries"}
+{"text": "250 grab to ortigas", "merchant": "Grab", "amount": "250", "category": "Transportation"}
+{"text": "12 jeepney to school", "merchant": null, "amount": "12", "category": "Transportation"}
+{"text": "20 tricycle going home", "merchant": null, "amount": "20", "category": "Transportation"}
+{"text": "1500 shell gas full tank", "merchant": "Shell", "amount": "1500", "category": "Transportation"}
+{"text": "30 mrt fare", "merchant": "MRT", "amount": "30", "category": "Transportation"}
+{"text": "15 lrt to taft", "merchant": "LRT", "amount": "15", "category": "Transportation"}
+{"text": "180 angkas to bgc", "merchant": "Angkas", "amount": "180", "category": "Transportation"}
+{"text": "220 joyride morning ride", "merchant": "Joyride", "amount": "220", "category": "Transportation"}
+{"text": "1200 caltex gas", "merchant": "Caltex", "amount": "1200", "category": "Transportation"}
+{"text": "3200 meralco bill", "merchant": "Meralco", "amount": "3200", "category": "Bills & Utilities"}
+{"text": "1499 globe postpaid", "merchant": "Globe", "amount": "1499", "category": "Bills & Utilities"}
+{"text": "1899 pldt fiber monthly", "merchant": "PLDT", "amount": "1899", "category": "Bills & Utilities"}
+{"text": "650 maynilad water", "merchant": "Maynilad", "amount": "650", "category": "Bills & Utilities"}
+{"text": "1799 converge fiber", "merchant": "Converge", "amount": "1799", "category": "Bills & Utilities"}
+{"text": "899 smart prepaid load", "merchant": "Smart", "amount": "899", "category": "Bills & Utilities"}
+{"text": "899 lazada order", "merchant": "Lazada", "amount": "899", "category": "Shopping"}
+{"text": "450 shopee delivery", "merchant": "Shopee", "amount": "450", "category": "Shopping"}
+{"text": "990 uniqlo shirt", "merchant": "Uniqlo", "amount": "990", "category": "Shopping"}
+{"text": "2500 sm department store", "merchant": "SM", "amount": "2500", "category": "Shopping"}
+{"text": "350 mercury drug", "merchant": "Mercury Drug", "amount": "350", "category": "Healthcare"}
+{"text": "800 doctor consult", "merchant": null, "amount": "800", "category": "Healthcare"}
+{"text": "275 watsons vitamins", "merchant": "Watsons", "amount": "275", "category": "Healthcare"}
+{"text": "5000 dental cleaning", "merchant": null, "amount": "5000", "category": "Healthcare"}
+{"text": "1560 sss contribution", "merchant": "SSS", "amount": "1560", "category": "Government Contributions"}
+{"text": "550 philhealth premium", "merchant": "PhilHealth", "amount": "550", "category": "Government Contributions"}
+{"text": "200 pag-ibig contribution", "merchant": "Pag-IBIG", "amount": "200", "category": "Government Contributions"}
+{"text": "5000 bir tax payment", "merchant": "BIR", "amount": "5000", "category": "Government Contributions"}
+{"text": "5000 padala mama", "merchant": null, "amount": "5000", "category": "Family Support"}
+{"text": "2000 allowance kapatid", "merchant": null, "amount": "2000", "category": "Family Support"}
+{"text": "1500 tithe simbahan", "merchant": null, "amount": "1500", "category": "Tithing & Donations"}
+{"text": "500 offering church", "merchant": null, "amount": "500", "category": "Tithing & Donations"}
+{"text": "149 spotify subscription", "merchant": "Spotify", "amount": "149", "category": "Entertainment"}
+{"text": "549 netflix monthly", "merchant": "Netflix", "amount": "549", "category": "Entertainment"}
+{"text": "350 sm cinema movie", "merchant": "SM Cinema", "amount": "350", "category": "Entertainment"}
+{"text": "299 hbo go", "merchant": "HBO Go", "amount": "299", "category": "Entertainment"}
+{"text": "70000 salary", "merchant": null, "amount": "70000", "category": "Salary", "type": "income"}
+{"text": "25000 freelance payment upwork", "merchant": "Upwork", "amount": "25000", "category": "Freelance", "type": "income"}
+{"text": "5000 client payment fiverr", "merchant": "Fiverr", "amount": "5000", "category": "Freelance", "type": "income"}

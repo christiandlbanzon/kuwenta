@@ -1,0 +1,59 @@
+[project]
+name = "kuwenta-backend"
+version = "0.1.0"
+description = "AI-powered personal finance tracker for the Philippines"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlmodel>=0.0.22",
+    "aiosqlite>=0.20",
+    "alembic>=1.14",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "email-validator>=2.2",
+    "python-jose[cryptography]>=3.3",
+    "passlib[bcrypt]>=1.7",
+    "bcrypt<5",  # passlib 1.7 incompatible with bcrypt 5.x
+    "python-multipart>=0.0.20",
+    "httpx>=0.28",
+    "google-genai>=0.3",
+    "groq>=0.13",
+    "apscheduler>=3.10",
+    "python-dateutil>=2.9",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=6.0",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "types-python-jose",
+    "types-passlib",
+    "freezegun>=1.5",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "B", "UP", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = false  # global default; tighten on core modules below
+
+[[tool.mypy.overrides]]
+module = ["app.core.*", "app.llm.*", "app.services.*", "app.tools.*"]
+strict = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+markers = [
+    "eval: slow eval-suite tests that hit real LLM APIs (skipped by default)",
+]
+addopts = "-m 'not eval'"
