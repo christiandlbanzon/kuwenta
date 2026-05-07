@@ -13,6 +13,7 @@ Each LLM call is wrapped in `trace(...)` so it shows up in the LLMCall table.
 """
 
 import json
+import re
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -29,6 +30,25 @@ from app.tools.finance_tools import (
     execute_tool,
     tool_schemas_for_planner,
 )
+
+
+def _parse_planner_response(text: str) -> PlannerDecision:
+    """Best-effort parse of planner output. Gemini's structured output rejects
+    `dict[str, Any]` (no schema for tool args), so we use plain text and parse
+    JSON ourselves — same approach as the OCR endpoint."""
+    s = text.strip()
+    if s.startswith("```"):
+        s = re.sub(r"^```(?:json)?\s*", "", s)
+        s = re.sub(r"\s*```$", "", s)
+    if not s.startswith("{"):
+        match = re.search(r"\{.*\}", s, flags=re.DOTALL)
+        s = match.group(0) if match else "{}"
+    try:
+        data = json.loads(s)
+    except json.JSONDecodeError:
+        data = {"invocations": [], "cannot_answer": True,
+                "reason": "Could not parse planner output."}
+    return PlannerDecision.model_validate(data)
 
 
 def _format_tool_catalog() -> str:
@@ -65,12 +85,12 @@ async def answer_question(
         provider=planner_provider.name,
         model=planner_provider.default_model,
     ) as t:
-        plan_sr = await planner_provider.complete_structured(
+        plan_completion = await planner_provider.complete(
             [Message(role="user", content=planner_prompt)],
-            schema=PlannerDecision,
+            temperature=0.0,
         )
-        t.tokens(plan_sr.input_tokens, plan_sr.output_tokens)
-    plan: PlannerDecision = plan_sr.parsed  # type: ignore[assignment]
+        t.tokens(plan_completion.input_tokens, plan_completion.output_tokens)
+    plan = _parse_planner_response(plan_completion.text)
 
     # --- 2. Execute tools ---
     traces: list[ToolCallTrace] = []

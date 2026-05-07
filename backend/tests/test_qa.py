@@ -36,15 +36,25 @@ class _ScriptedProvider:
     def __init__(self, plan: PlannerDecision, summary: str) -> None:
         self._plan = plan
         self._summary = summary
+        self._call_count = 0
 
     async def complete_with_vision(self, *a, **kw):  # pragma: no cover
         raise NotImplementedError
 
     async def complete_structured(self, messages, schema, **kwargs):  # type: ignore[no-untyped-def]
+        # Kept for backward compat in case any other path uses it
         return StructuredResult(parsed=self._plan, input_tokens=20, output_tokens=10)
 
     async def complete(self, messages, **kwargs):  # type: ignore[no-untyped-def]
-        return CompletionResult(text=self._summary)
+        # First call = planner (returns JSON of the plan). Second = summarizer prose.
+        self._call_count += 1
+        if self._call_count == 1:
+            import json
+            return CompletionResult(
+                text=json.dumps(self._plan.model_dump()),
+                input_tokens=20, output_tokens=10,
+            )
+        return CompletionResult(text=self._summary, input_tokens=50, output_tokens=20)
 
 
 async def _setup(session: AsyncSession) -> tuple[User, Account]:
