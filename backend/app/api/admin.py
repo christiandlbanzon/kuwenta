@@ -20,13 +20,17 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 
 @router.get("/diag")
 async def diag(user: CurrentUser) -> dict[str, object]:
-    """Auth-gated diagnostic — confirms which LLM providers are configured.
-    Returns booleans only; never exposes the actual key values.
+    """Auth-gated diagnostic — confirms env config + actually exercises the LLM.
+
+    Surfaces the underlying error message so deploy issues can be debugged
+    without log access. Never exposes the actual key values.
     """
     from app.config import get_settings
+    from app.llm.base import Message
+    from app.llm.router import get_provider_for_purpose
 
     s = get_settings()
-    return {
+    out: dict[str, object] = {
         "env": s.app_env,
         "providers": {
             "gemini_configured": bool(s.gemini_api_key),
@@ -35,6 +39,27 @@ async def diag(user: CurrentUser) -> dict[str, object]:
         "rate_limit_per_min": s.gemini_rate_limit_per_min,
         "cors_origins": [o.strip() for o in s.cors_origins.split(",") if o.strip()],
     }
+
+    # Live Gemini ping — exact failure mode that's blocking quick-add
+    try:
+        provider = get_provider_for_purpose("categorization")
+        result = await provider.complete(
+            [Message(role="user", content="Reply with exactly: pong")],
+            temperature=0.0,
+        )
+        out["gemini_live_check"] = {
+            "ok": True,
+            "text": result.text[:50],
+            "input_tokens": result.input_tokens,
+            "output_tokens": result.output_tokens,
+        }
+    except Exception as e:
+        out["gemini_live_check"] = {
+            "ok": False,
+            "error_type": type(e).__name__,
+            "error": str(e)[:500],
+        }
+    return out
 
 # Approximate Gemini 2.5 Flash paid pricing (USD per 1M tokens).
 # Used purely to project costs from the free-tier LLMCall data.
