@@ -15,7 +15,7 @@ services:
     rootDir: backend
     dockerfilePath: ./Dockerfile
     plan: free
-    region: singapore
+    region: oregon  # was singapore — Gemini AI Studio rejects Render Singapore IPs as "User location not supported"
     healthCheckPath: /healthz
     autoDeploy: true
     envVars:
