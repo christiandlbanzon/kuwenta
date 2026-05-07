@@ -59,6 +59,31 @@ async def diag(user: CurrentUser) -> dict[str, object]:
             "error_type": type(e).__name__,
             "error": str(e)[:500],
         }
+
+    # Test the Q&A planner pipeline (this is what's failing in prod)
+    try:
+        from app.schemas.qa import PlannerDecision
+
+        provider = get_provider_for_purpose("qa")
+        sr = await provider.complete_structured(
+            [Message(role="user", content='Return: {"invocations": [], "cannot_answer": true, "reason": "test"}')],
+            schema=PlannerDecision,
+            temperature=0.0,
+        )
+        out["qa_structured_check"] = {
+            "ok": True,
+            "parsed_type": type(sr.parsed).__name__,
+            "cannot_answer": getattr(sr.parsed, "cannot_answer", None),
+            "input_tokens": sr.input_tokens,
+        }
+    except Exception as e:
+        import traceback
+        out["qa_structured_check"] = {
+            "ok": False,
+            "error_type": type(e).__name__,
+            "error": str(e)[:600],
+            "tb": traceback.format_exc()[:1500],
+        }
     return out
 
 # Approximate Gemini 2.5 Flash paid pricing (USD per 1M tokens).
