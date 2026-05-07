@@ -35,7 +35,13 @@ from app.tools.finance_tools import (
 def _parse_planner_response(text: str) -> PlannerDecision:
     """Best-effort parse of planner output. Gemini's structured output rejects
     `dict[str, Any]` (no schema for tool args), so we use plain text and parse
-    JSON ourselves — same approach as the OCR endpoint."""
+    JSON ourselves — same approach as the OCR endpoint.
+
+    Robust against three failure modes:
+      1. JSON wrapped in markdown fences (```json ... ```)
+      2. JSON with leading/trailing prose
+      3. JSON parses but doesn't match PlannerDecision shape (validation error)
+    """
     s = text.strip()
     if s.startswith("```"):
         s = re.sub(r"^```(?:json)?\s*", "", s)
@@ -43,12 +49,20 @@ def _parse_planner_response(text: str) -> PlannerDecision:
     if not s.startswith("{"):
         match = re.search(r"\{.*\}", s, flags=re.DOTALL)
         s = match.group(0) if match else "{}"
+
+    fallback = PlannerDecision(
+        invocations=[],
+        cannot_answer=True,
+        reason=f"Could not interpret planner output: {text[:120]}",
+    )
     try:
         data = json.loads(s)
     except json.JSONDecodeError:
-        data = {"invocations": [], "cannot_answer": True,
-                "reason": "Could not parse planner output."}
-    return PlannerDecision.model_validate(data)
+        return fallback
+    try:
+        return PlannerDecision.model_validate(data)
+    except Exception:
+        return fallback
 
 
 def _format_tool_catalog() -> str:
