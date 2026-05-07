@@ -17,6 +17,7 @@ services:
     plan: free
     region: singapore
     healthCheckPath: /healthz
+    autoDeploy: true
     envVars:
       - key: KUWENTA_APP_ENV
         value: production
@@ -40,4 +41,4 @@ services:
       - key: KUWENTA_JWT_SECRET
         sync: false
       - key: KUWENTA_CORS_ORIGINS
-        sync: false
+        value: https://frontend-eight-phi-x0gneerawb.vercel.app
