@@ -17,6 +17,25 @@ from app.schemas.admin import LLMStats, PerProviderStats, PerPurposeStats
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
+
+@router.get("/diag")
+async def diag(user: CurrentUser) -> dict[str, object]:
+    """Auth-gated diagnostic — confirms which LLM providers are configured.
+    Returns booleans only; never exposes the actual key values.
+    """
+    from app.config import get_settings
+
+    s = get_settings()
+    return {
+        "env": s.app_env,
+        "providers": {
+            "gemini_configured": bool(s.gemini_api_key),
+            "groq_configured": bool(s.groq_api_key),
+        },
+        "rate_limit_per_min": s.gemini_rate_limit_per_min,
+        "cors_origins": [o.strip() for o in s.cors_origins.split(",") if o.strip()],
+    }
+
 # Approximate Gemini 2.5 Flash paid pricing (USD per 1M tokens).
 # Used purely to project costs from the free-tier LLMCall data.
 COST_PER_M_INPUT = 0.075
